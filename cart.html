@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart - ShopHub</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="index.html">
+                    <i class="fas fa-shopping-bag"></i> ShopHub
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a href="products.html" class="nav-link">Products</a>
+                </li>
+                <li class="nav-item">
+                    <a href="cart.html" class="nav-link active">
+                        <i class="fas fa-shopping-cart"></i>
+                        Cart
+                        <span class="cart-count" id="cart-count">0</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="checkout.html" class="nav-link">Checkout</a>
+                </li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <h1>Shopping Cart</h1>
+        <p>Review and manage your items</p>
+    </section>
+
+    <!-- Cart Content -->
+    <div class="container">
+        <div class="cart-wrapper">
+            <!-- Cart Items Section -->
+            <div class="cart-items-section">
+                <div id="cart-empty-message" class="empty-cart-message">
+                    <i class="fas fa-shopping-cart"></i>
+                    <h2>Your Cart is Empty</h2>
+                    <p>Looks like you haven't added any items yet</p>
+                    <a href="products.html" class="btn btn-primary">Continue Shopping</a>
+                </div>
+
+                <div id="cart-items-container" style="display: none;">
+                    <table class="cart-table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Item Total</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cart-items-body">
+                            <!-- Cart items will be rendered here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Cart Summary Section -->
+            <div class="cart-summary-section">
+                <div class="cart-summary">
+                    <h2>Order Summary</h2>
+
+                    <div class="summary-item">
+                        <span>Subtotal</span>
+                        <span id="subtotal">$0.00</span>
+                    </div>
+
+                    <div class="summary-item">
+                        <span>Shipping</span>
+                        <span id="shipping">$0.00</span>
+                    </div>
+
+                    <div class="summary-item">
+                        <span>Tax</span>
+                        <span id="tax">$0.00</span>
+                    </div>
+
+                    <hr>
+
+                    <div class="summary-item total">
+                        <span>Total</span>
+                        <span id="total">$0.00</span>
+                    </div>
+
+                    <div class="cart-actions">
+                        <a href="products.html" class="btn btn-outline btn-block">Continue Shopping</a>
+                        <a href="checkout.html" class="btn btn-primary btn-block" id="checkout-btn">Proceed to Checkout</a>
+                    </div>
+
+                    <div class="promo-code-section">
+                        <input type="text" placeholder="Enter promo code" id="promo-input" class="promo-input">
+                        <button class="btn btn-small btn-outline" id="apply-promo-btn">Apply</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h4>About ShopHub</h4>
+                <p>Your one-stop destination for quality products and amazing deals.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="products.html">Shop</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Follow Us</h4>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Contact</h4>
+                <p>Email: hello@shophub.com</p>
+                <p>Phone: +1 (555) 123-4567</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 ShopHub. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/products.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/cart.js"></script>
+    <script>
+        // Display cart on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            displayCart();
+            document.getElementById('apply-promo-btn').addEventListener('click', applyPromoCode);
+        });
+
+        // Display cart items and update summary
+        function displayCart() {
+            const cart = getCart();
+            const cartItemsContainer = document.getElementById('cart-items-container');
+            const cartEmptyMessage = document.getElementById('cart-empty-message');
+            const cartItemsBody = document.getElementById('cart-items-body');
+
+            if (cart.length === 0) {
+                cartItemsContainer.style.display = 'none';
+                cartEmptyMessage.style.display = 'flex';
+                document.getElementById('checkout-btn').disabled = true;
+                updateCartSummary([]);
+                return;
+            }
+
+            cartItemsContainer.style.display = 'block';
+            cartEmptyMessage.style.display = 'none';
+            document.getElementById('checkout-btn').disabled = false;
+
+            cartItemsBody.innerHTML = '';
+
+            cart.forEach(item => {
+                const product = products.find(p => p.id === item.productId);
+                if (product) {
+                    const itemTotal = product.price * item.quantity;
+                    const row = document.createElement('tr');
+                    row.className = 'cart-item-row';
+                    row.innerHTML = `
+                        <td class="product-col">
+                            <div class="cart-product-info">
+                                <img src="${product.image}" alt="${product.name}">
+                                <div>
+                                    <h4>${product.name}</h4>
+                                    <p>${product.category}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="price-col">$${product.price.toFixed(2)}</td>
+                        <td class="quantity-col">
+                            <div class="quantity-control">
+                                <button class="qty-btn" onclick="updateQuantity(${item.productId}, ${item.quantity - 1})">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <input type="number" value="${item.quantity}" min="1" readonly class="qty-input">
+                                <button class="qty-btn" onclick="updateQuantity(${item.productId}, ${item.quantity + 1})">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </td>
+                        <td class="total-col">$${itemTotal.toFixed(2)}</td>
+                        <td class="action-col">
+                            <button class="btn-remove" onclick="removeFromCart(${item.productId})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    `;
+                    cartItemsBody.appendChild(row);
+                }
+            });
+
+            updateCartSummary(cart);
+        }
+
+        // Update cart summary (subtotal, tax, shipping, total)
+        function updateCartSummary(cart) {
+            let subtotal = 0;
+
+            cart.forEach(item => {
+                const product = products.find(p => p.id === item.productId);
+                if (product) {
+                    subtotal += product.price * item.quantity;
+                }
+            });
+
+            const shipping = subtotal > 50 ? 0 : (subtotal === 0 ? 0 : 10);
+            const tax = subtotal * 0.08; // 8% tax
+            const total = subtotal + shipping + tax;
+
+            document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
+            document.getElementById('shipping').textContent = shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`;
+            document.getElementById('tax').textContent = `$${tax.toFixed(2)}`;
+            document.getElementById('total').textContent = `$${total.toFixed(2)}`;
+        }
+
+        // Update product quantity
+        function updateQuantity(productId, newQuantity) {
+            if (newQuantity < 1) return;
+
+            const cart = getCart();
+            const item = cart.find(i => i.productId === productId);
+
+            if (item) {
+                item.quantity = newQuantity;
+                saveCart(cart);
+                displayCart();
+                updateCartCount();
+            }
+        }
+
+        // Remove item from cart
+        function removeFromCart(productId) {
+            const cart = getCart();
+            const updatedCart = cart.filter(item => item.productId !== productId);
+            saveCart(updatedCart);
+            displayCart();
+            updateCartCount();
+            showNotification('Item removed from cart');
+        }
+
+        // Apply promo code
+        function applyPromoCode() {
+            const promoCode = document.getElementById('promo-input').value.trim().toUpperCase();
+
+            if (promoCode === 'SAVE10') {
+                showNotification('Promo code applied! 10% discount on your order');
+            } else if (promoCode === 'SAVE20') {
+                showNotification('Promo code applied! 20% discount on your order');
+            } else if (promoCode === '') {
+                showNotification('Please enter a promo code', 'error');
+            } else {
+                showNotification('Invalid promo code', 'error');
+            }
+        }
+
+        // Show notification message
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'error' ? 'times-circle' : 'check-circle'}"></i>
+                ${message}
+            `;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 10);
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
